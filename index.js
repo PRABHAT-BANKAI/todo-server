@@ -3,7 +3,10 @@ const { DBconnect } = require("./config/db");
 const { userRouter } = require("./routes/userRoutes");
 const { auth } = require("./middleware/auth");
 const { todolistRouter } = require("./routes/todolistRoute");
+const cors = require("cors");
+
 require("dotenv").config();
+app.use(cors());
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
