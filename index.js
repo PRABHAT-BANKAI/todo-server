@@ -6,11 +6,13 @@ const { todolistRouter } = require("./routes/todolistRoute");
 const cors = require("cors");
 
 require("dotenv").config();
-app.use(cors());
+
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+app.use(cors());
 
 app.use("/user", userRouter);
 
