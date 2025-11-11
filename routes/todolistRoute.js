@@ -68,6 +68,8 @@ todolistRouter.patch("/:id", async (req, res) => {
 todolistRouter.delete("/:id", async (req, res) => {
   const { id } = req.params;
   const { authorId } = req.body;
+  console.log(id)
+  console.log(authorId)
 
   try {
     const todo = await TodolistModel.findOneAndDelete({ _id: id, authorId });
