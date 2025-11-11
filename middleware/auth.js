@@ -2,23 +2,36 @@ const jwt = require("jsonwebtoken");
 
 const auth = (req, res, next) => {
   try {
-    let token = req.headers.authorization;
+    const authHeader = req.headers.authorization;
 
-    if (!token) {
-      return res.status(401).json({ message: "Unauthorized" });
+    // ✅ Check if token is present
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "Authorization token missing or invalid" });
     }
-    let decoded = jwt.verify(token.split(" ")[1], process.env.SECRET_KEY);
 
-    if (!decoded) {
-      return res.status(401).json({ message: "Unauthorized" });
+    const token = authHeader.split(" ")[1];
+
+    // ✅ Verify token
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+
+    if (!decoded || !decoded.userData || !decoded.userData._id) {
+      return res.status(401).json({ message: "Invalid token data" });
     }
-    console.log(decoded);
 
-    req.body.authorId = decoded.userData._id;
+    // ✅ Attach user data safely to the request (don’t mutate req.body)
+    req.user = {
+      id: decoded.userData._id,
+      email: decoded.userData.email, // optional, if available
+      name: decoded.userData.userName,   // optional
+    };
 
     next();
   } catch (error) {
-    return res.status(401).json({ message: error });
+    console.error("Auth Middleware Error:", error.message);
+    return res.status(401).json({
+      message: "Unauthorized - Invalid or expired token",
+      error: error.message,
+    });
   }
 };
 
