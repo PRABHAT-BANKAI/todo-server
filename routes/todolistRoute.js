@@ -27,7 +27,7 @@ todolistRouter.post("/", async (req, res) => {
 /* ------------------- READ ------------------- */
 // Get all todos for the logged-in user
 todolistRouter.get("/", async (req, res) => {
-  const { authorId } = req.body; // Or get from token middleware
+  const { authorId } = req.user; // Or get from token middleware
   try {
     const todolistData = await TodolistModel.find({ authorId });
     return res.status(200).json({ message: todolistData });
@@ -41,7 +41,8 @@ todolistRouter.get("/", async (req, res) => {
 // Update a todo by ID
 todolistRouter.patch("/:id", async (req, res) => {
   const { id } = req.params;
-  const { authorId, todoName, completed } = req.body;
+    const { authorId } = req.user;
+  const {  todoName, completed } = req.body;
 
   try {
     const todo = await TodolistModel.findOne({ _id: id, authorId });
@@ -70,7 +71,7 @@ todolistRouter.patch("/:id", async (req, res) => {
 // Delete a todo by ID
 todolistRouter.delete("/:id", async (req, res) => {
   const { id } = req.params;
-  const { authorId } = req.body;
+  const { authorId } = req.user;
   console.log(id);
   console.log(authorId);
 
