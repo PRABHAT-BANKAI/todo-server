@@ -6,7 +6,8 @@ const todolistRouter = express.Router();
 /* ------------------- CREATE ------------------- */
 // Add a new todo
 todolistRouter.post("/", async (req, res) => {
-  const { authorId, todoName } = req.body;
+  const { authorId } = req.user;
+  const { todoName } = req.body;
   try {
     if (!todoName || !authorId) {
       return res.status(400).json({ message: "Missing required fields" });
@@ -45,7 +46,9 @@ todolistRouter.patch("/:id", async (req, res) => {
   try {
     const todo = await TodolistModel.findOne({ _id: id, authorId });
     if (!todo) {
-      return res.status(404).json({ message: "Task not found or unauthorized" });
+      return res
+        .status(404)
+        .json({ message: "Task not found or unauthorized" });
     }
 
     if (todoName !== undefined) todo.todoName = todoName;
@@ -68,14 +71,16 @@ todolistRouter.patch("/:id", async (req, res) => {
 todolistRouter.delete("/:id", async (req, res) => {
   const { id } = req.params;
   const { authorId } = req.body;
-  console.log(id)
-  console.log(authorId)
+  console.log(id);
+  console.log(authorId);
 
   try {
     const todo = await TodolistModel.findOneAndDelete({ _id: id, authorId });
 
     if (!todo) {
-      return res.status(404).json({ message: "Task not found or unauthorized" });
+      return res
+        .status(404)
+        .json({ message: "Task not found or unauthorized" });
     }
 
     return res.status(200).json({ message: "Task deleted successfully" });

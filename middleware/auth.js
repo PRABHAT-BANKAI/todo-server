@@ -20,7 +20,7 @@ const auth = (req, res, next) => {
 
     // ✅ Attach user data safely to the request (don’t mutate req.body)
     req.user = {
-      id: decoded.userData._id,
+      authorId: decoded.userData._id,
       email: decoded.userData.email, // optional, if available
       name: decoded.userData.userName,   // optional
     };
